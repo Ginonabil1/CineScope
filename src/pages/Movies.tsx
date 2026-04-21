@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import LoadingSkeleton from "../components/common/LoadingSkeleton";
 import SectionHeader from "../components/common/SectionHeader";
 import FilterBar from "../features/movies/components/FilterBar";
@@ -16,6 +16,7 @@ const defaultFilters: MovieFilters = {
 
 const MoviesPage = () => {
   const [filters, setFilters] = useState<MovieFilters>(defaultFilters);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const { favoriteIds, toggleFavorite } = useFavoritesStore();
   const genresQuery = useMovieGenres();
   const catalogQuery = useMovieCatalog(filters);
@@ -24,6 +25,31 @@ const MoviesPage = () => {
     () => catalogQuery.data?.pages.flatMap((page) => page.results) ?? [],
     [catalogQuery.data],
   );
+
+  useEffect(() => {
+    const node = loadMoreRef.current;
+
+    if (!node || !catalogQuery.hasNextPage) {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const firstEntry = entries[0];
+
+        if (firstEntry?.isIntersecting && !catalogQuery.isFetchingNextPage) {
+          void catalogQuery.fetchNextPage();
+        }
+      },
+      {
+        rootMargin: "300px 0px",
+      },
+    );
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, [catalogQuery]);
 
   return (
     <section className="space-y-8">
@@ -45,16 +71,11 @@ const MoviesPage = () => {
         <>
           <MovieGrid movies={movies} favoriteIds={favoriteIds} onToggleFavorite={toggleFavorite} />
 
-          {catalogQuery.hasNextPage ? (
-            <div className="flex justify-center">
-              <button
-                type="button"
-                onClick={() => catalogQuery.fetchNextPage()}
-                disabled={catalogQuery.isFetchingNextPage}
-                className="rounded-full bg-cyan-300 px-6 py-3 font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:bg-slate-600 disabled:text-slate-300"
-              >
-                {catalogQuery.isFetchingNextPage ? "Loading more..." : "Load more movies"}
-              </button>
+          {catalogQuery.hasNextPage ? <div ref={loadMoreRef} className="h-6" /> : null}
+
+          {catalogQuery.isFetchingNextPage ? (
+            <div className="flex justify-center py-4">
+              <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/10 border-t-cyan-300" />
             </div>
           ) : null}
         </>

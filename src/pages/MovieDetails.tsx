@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getImageUrl } from "../api/tmdb";
 import LoadingSkeleton from "../components/common/LoadingSkeleton";
@@ -14,6 +14,10 @@ const MovieDetailsPage = () => {
   const detailsQuery = useMovieDetails(movieId);
 
   const trailer = useMemo(() => detailsQuery.data?.videos[0], [detailsQuery.data?.videos]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [movieId]);
 
   if (detailsQuery.isLoading) {
     return <LoadingSkeleton />;
