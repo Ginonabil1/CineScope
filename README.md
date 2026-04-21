@@ -3,7 +3,6 @@
 A modern, production-ready movie discovery application built with **React**, **TypeScript**, **Vite**, and the **TMDB API**.
 
 > A scalable frontend with advanced features, clean architecture, and professional UX patterns.
-![Website Screenshot](screenshot.png)
 
 ## ✨ Features
 
