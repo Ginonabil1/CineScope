@@ -6,7 +6,9 @@ import {
   MovieDetails,
   MovieFilters,
   PaginatedResponse,
+  Person,
   Review,
+  SearchResponseItem,
   Video,
 } from "../types/tmdb";
 
@@ -50,14 +52,16 @@ export const tmdbApi = {
     });
     return data;
   },
-  async searchMovies(query: string) {
-    const { data } = await client.get<PaginatedResponse<Movie>>("/search/movie", {
+  async searchMedia(query: string) {
+    const { data } = await client.get<PaginatedResponse<SearchResponseItem>>("/search/multi", {
       params: {
         include_adult: false,
         query,
       },
     });
-    return data.results;
+    return data.results.filter(
+      (item) => item.media_type === "movie" || item.media_type === "person",
+    );
   },
   async getGenres() {
     const { data } = await client.get<{ genres: Genre[] }>("/genre/movie/list");
@@ -90,6 +94,19 @@ export const tmdbApi = {
       reviews: reviews.data.results,
       recommendations: recommendations.data.results,
       videos: prioritizedVideos,
+    };
+  },
+  async getPersonDetails(personId: number) {
+    const [details, movieCredits] = await Promise.all([
+      client.get<Person>(`/person/${personId}`),
+      client.get<{ cast: Movie[] }>(`/person/${personId}/movie_credits`),
+    ]);
+
+    return {
+      details: details.data,
+      movieCredits: movieCredits.data.cast.sort(
+        (first, second) => second.vote_average - first.vote_average,
+      ),
     };
   },
 };

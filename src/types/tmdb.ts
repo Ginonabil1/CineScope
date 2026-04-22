@@ -14,6 +14,17 @@ export interface Movie {
   genre_ids?: number[];
 }
 
+export interface Person {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for_department: string;
+  biography?: string;
+  birthday?: string | null;
+  place_of_birth?: string | null;
+  known_for?: Movie[];
+}
+
 export interface MovieDetails extends Movie {
   genres: Genre[];
   runtime: number;
@@ -63,4 +74,26 @@ export interface FavoriteMovie {
   backdrop_path: string | null;
   vote_average: number;
   release_date: string;
+}
+
+export interface RecentlyViewedMovie {
+  id: number;
+  title: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  vote_average: number;
+  release_date: string;
+  overview: string;
+}
+
+export interface SearchResponseItem {
+  id: number;
+  media_type: "movie" | "person";
+  title?: string;
+  name?: string;
+  poster_path?: string | null;
+  profile_path?: string | null;
+  release_date?: string;
+  known_for_department?: string;
+  known_for?: Movie[];
 }

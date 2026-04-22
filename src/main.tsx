@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
 import App from "./App";
 import { FavoritesProvider } from "./store/FavoritesProvider";
+import { RecentlyViewedProvider } from "./store/RecentlyViewedProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,9 +20,11 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <FavoritesProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <RecentlyViewedProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </RecentlyViewedProvider>
       </FavoritesProvider>
     </QueryClientProvider>
   </StrictMode>,

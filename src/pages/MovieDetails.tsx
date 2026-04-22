@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getImageUrl } from "../api/tmdb";
+import ErrorState from "../components/common/ErrorState";
 import LoadingSkeleton from "../components/common/LoadingSkeleton";
 import MovieGrid from "../features/movies/components/MovieGrid";
 import useMovieDetails from "../features/movies/hooks/useMovieDetails";
 import useFavoritesStore from "../store/useFavoritesStore";
+import useRecentlyViewedStore from "../store/useRecentlyViewedStore";
 
 const MovieDetailsPage = () => {
   const params = useParams();
   const movieId = Number(params.movieId);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const { favoriteIds, toggleFavorite } = useFavoritesStore();
+  const { addRecentlyViewed } = useRecentlyViewedStore();
   const detailsQuery = useMovieDetails(movieId);
 
   const trailer = useMemo(() => detailsQuery.data?.videos[0], [detailsQuery.data?.videos]);
@@ -19,8 +22,35 @@ const MovieDetailsPage = () => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [movieId]);
 
+  useEffect(() => {
+    if (!detailsQuery.data) {
+      return;
+    }
+
+    const { details } = detailsQuery.data;
+    addRecentlyViewed({
+      id: details.id,
+      title: details.title,
+      poster_path: details.poster_path,
+      backdrop_path: details.backdrop_path,
+      vote_average: details.vote_average,
+      release_date: details.release_date,
+      overview: details.overview,
+    });
+  }, [addRecentlyViewed, detailsQuery.data]);
+
   if (detailsQuery.isLoading) {
     return <LoadingSkeleton />;
+  }
+
+  if (detailsQuery.isError) {
+    return (
+      <ErrorState
+        title="Movie details couldn't load"
+        message="The movie page is unavailable right now. Retry to fetch cast, reviews, and recommendations."
+        onRetry={() => void detailsQuery.refetch()}
+      />
+    );
   }
 
   if (!detailsQuery.data) {

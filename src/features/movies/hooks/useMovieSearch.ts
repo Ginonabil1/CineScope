@@ -3,8 +3,8 @@ import { tmdbApi } from "../../../api/tmdb";
 
 const useMovieSearch = (query: string) =>
   useQuery({
-    queryKey: ["movies", "search", query],
-    queryFn: () => tmdbApi.searchMovies(query),
+    queryKey: ["search", "multi", query],
+    queryFn: () => tmdbApi.searchMedia(query),
     enabled: query.trim().length > 1,
     staleTime: 1000 * 60 * 2,
   });

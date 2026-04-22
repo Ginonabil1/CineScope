@@ -12,6 +12,7 @@ A modern, production-ready movie discovery application built with **React**, **T
 - 📊 Smart sorting options (popularity, revenue, rating)
 - 📖 Paginated infinite scroll for large result sets
 - ⚡ Debounced search with instant feedback
+- 🎭 Search for actors and people profiles
 
 ### Movie Details
 - 📋 Dedicated detail pages with comprehensive information
@@ -25,6 +26,12 @@ A modern, production-ready movie discovery application built with **React**, **T
 - 🔔 Real-time toast notifications
 - 📌 Live watchlist counter updates
 - 🎨 Smooth UI feedback for additions/removals
+
+### Recently Viewed
+- 📺 Track your viewing history of movies and actors
+- 🔄 Quick access to previously viewed content
+- 💾 Persistent storage with localStorage
+- 📌 Auto-populated as you browse
 
 ## 🛠️ Tech Stack
 
@@ -78,10 +85,12 @@ src/
 
 | Page | Purpose | Features |
 |------|---------|----------|
-| **Home** | Landing page with curated sections | Trending, Now Playing, Top Rated previews |
+| **Home** | Landing page with curated sections | Trending, Now Playing, Top Rated, Recently Viewed previews |
 | **Movies/Discover** | Explore all movies | Filtering, sorting, pagination, search |
 | **Movie Details** | Individual movie information | Cast, reviews, recommendations, trailer |
+| **Person Details** | Individual actor/person information | Filmography, biography, profile details |
 | **Watchlist** | Saved favorite movies | Persistent list, quick removal |
+| **Recently Viewed** | History of viewed movies and actors | Quick re-access to previous selections |
 
 ## 🚀 Getting Started
 

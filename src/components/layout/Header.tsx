@@ -4,13 +4,15 @@ import { getImageUrl } from "../../api/tmdb";
 import useMovieSearch from "../../features/movies/hooks/useMovieSearch";
 import useDebounce from "../../hooks/useDebounce";
 import useFavoritesStore from "../../store/useFavoritesStore";
+import ErrorState from "../common/ErrorState";
+import PersonAvatar from "../common/PersonAvatar";
 
 const Header = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const debouncedQuery = useDebounce(query, 500);
-  const { data: results = [], isFetching } = useMovieSearch(debouncedQuery);
+  const { data: results = [], error, isError, isFetching, refetch } = useMovieSearch(debouncedQuery);
   const { favoritesCount } = useFavoritesStore();
 
   useEffect(() => {
@@ -48,7 +50,7 @@ const Header = () => {
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search movies..."
+            placeholder="Search movies or actors..."
             className="w-full rounded-full border border-white/10 bg-white/5 px-5 py-4 text-white outline-none placeholder:text-slate-500"
           />
 
@@ -56,33 +58,62 @@ const Header = () => {
             <div className="absolute top-[calc(100%+12px)] w-full overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/95 shadow-2xl">
               {isFetching ? (
                 <p className="px-5 py-4 text-sm text-slate-400">Searching...</p>
+              ) : isError ? (
+                <div className="p-3">
+                  <ErrorState
+                    title="Search is unavailable"
+                    message={error instanceof Error ? error.message : "Please try your search again."}
+                    onRetry={() => void refetch()}
+                  />
+                </div>
               ) : results.length > 0 ? (
                 <div className="max-h-[26rem] overflow-y-auto">
-                  {results.slice(0, 6).map((movie) => (
+                  {results.slice(0, 8).map((item) => (
                     <button
-                      key={movie.id}
+                      key={`${item.media_type}-${item.id}`}
                       type="button"
                       onClick={() => {
-                        navigate(`/movie/${movie.id}`);
+                        navigate(item.media_type === "movie" ? `/movie/${item.id}` : `/person/${item.id}`);
                         setQuery("");
                         setIsSearchOpen(false);
                       }}
                       className="flex w-full items-center gap-4 border-b border-white/5 px-5 py-4 text-left transition hover:bg-white/5"
                     >
-                      <img
-                        src={getImageUrl(movie.poster_path, "w200") ?? "https://placehold.co/80x120/111827/E5E7EB?text=No+Poster"}
-                        alt={movie.title}
-                        className="h-20 w-14 rounded-xl object-cover"
-                      />
+                      {item.media_type === "movie" ? (
+                        <img
+                          src={
+                            getImageUrl(item.poster_path ?? null, "w200") ??
+                            "https://placehold.co/80x120/111827/E5E7EB?text=No+Image"
+                          }
+                          alt={item.title ?? "Movie"}
+                          className="h-20 w-14 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <PersonAvatar
+                          name={item.name ?? "Actor"}
+                          profilePath={item.profile_path}
+                          size="sm"
+                          className="h-16 w-16 rounded-xl object-cover text-lg"
+                        />
+                      )}
                       <div>
-                        <p className="font-medium text-white">{movie.title}</p>
-                        <p className="text-sm text-slate-400">{movie.release_date || "Unknown release date"}</p>
+                        <p className="font-medium text-white">{item.title ?? item.name}</p>
+                        <p className="text-sm text-slate-400">
+                          {item.media_type === "movie"
+                            ? item.release_date || "Unknown release date"
+                            : item.known_for_department || "Person"}
+                        </p>
+                        {item.media_type === "person" && item.known_for?.length ? (
+                          <p className="line-clamp-1 text-xs text-slate-500">
+                            Known for: {item.known_for.map((movie) => movie.title).filter(Boolean).slice(0, 2).join(", ")}
+                          </p>
+                        ) : null}
                       </div>
                     </button>
                   ))}
                 </div>
               ) : (
-                <p className="px-5 py-4 text-sm text-slate-400">No movies matched that search.</p>
+                <p className="px-5 py-4 text-sm text-slate-400">No movies or actors matched that search.</p>
               )}
             </div>
           ) : null}

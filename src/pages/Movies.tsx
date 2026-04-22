@@ -1,3 +1,4 @@
+import ErrorState from "../components/common/ErrorState";
 import { useEffect, useMemo, useRef, useState } from "react";
 import LoadingSkeleton from "../components/common/LoadingSkeleton";
 import SectionHeader from "../components/common/SectionHeader";
@@ -67,6 +68,12 @@ const MoviesPage = () => {
 
       {catalogQuery.isLoading ? (
         <LoadingSkeleton />
+      ) : catalogQuery.isError ? (
+        <ErrorState
+          title="Discover is unavailable"
+          message="We couldn't load the movie catalog with the current filters."
+          onRetry={() => void catalogQuery.refetch()}
+        />
       ) : (
         <>
           <MovieGrid movies={movies} favoriteIds={favoriteIds} onToggleFavorite={toggleFavorite} />
