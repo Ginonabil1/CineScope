@@ -10,7 +10,7 @@ const FavoritesPage = () => {
     <section className="space-y-8">
       <SectionHeader
         eyebrow="Watchlist"
-        title="Persistent favorites with localStorage"
+        title="Your favourites movies"
         description="Save the movies you want to come back to and keep your shortlist in one place."
       />
 

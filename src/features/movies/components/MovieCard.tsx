@@ -54,7 +54,7 @@ const MovieCard = ({ movie, isFavorite, onToggleFavorite }: MovieCardProps) => {
                 : "border border-white/15 bg-white/5 text-slate-200 hover:border-cyan-300/40"
             }`}
           >
-            {isFavorite ? "Saved" : "Watchlist"}
+            {isFavorite ? "Saved" : "Add to Watchlist"}
           </button>
         </div>
       </div>

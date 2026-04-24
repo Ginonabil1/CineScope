@@ -146,23 +146,6 @@ npm run preview
 # Run ESLint to check code quality
 npm run lint
 ```
-
-## 🏆 Why This Project Stands Out
-
-✅ **Production-Ready Code** - Not a basic tutorial, but a real-world scalable application
-
-✅ **Modern Architecture** - Feature-based organization, API layer abstraction, proper separation of concerns
-
-✅ **Advanced State Management** - React Query for server state + Context API for persistent client state
-
-✅ **Professional UX** - Skeleton loaders, debounced search, toast notifications, real-time updates
-
-✅ **Type Safety** - Full TypeScript coverage for IDE support and error prevention
-
-✅ **Performance Optimized** - Pagination, lazy loading, efficient caching with React Query
-
-✅ **Reusable Components** - Modular UI components that follow composition patterns
-
 ## 🔧 Development Conventions
 
 - **TypeScript Strict Mode** - All files use strict type checking
@@ -211,26 +194,6 @@ Build output will be in the `dist/` folder. Ready for deployment to Netlify, Ver
 
 ### Environment Setup for Production
 Add `VITE_TMDB_API_KEY` to your hosting platform's environment variables.
-
-## 📚 Resources
-
-- [React Documentation](https://react.dev)
-- [TMDB API Docs](https://developer.themoviedb.org/docs)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Vite Guide](https://vitejs.dev/guide/)
-- [React Query](https://tanstack.com/query/latest)
-- [Tailwind CSS](https://tailwindcss.com/docs)
-
-## 🚧 Future Enhancements
-
-- [ ] Automated tests (Jest + React Testing Library)
-- [ ] Accessibility improvements (WCAG compliance)
-- [ ] Offline support (Service Workers)
-- [ ] User authentication & personal recommendations
-- [ ] Advanced filtering with URL state persistence
-- [ ] Dark mode toggle
-- [ ] Movie ratings and reviews submission
-- [ ] Social sharing features
 
 ## 📄 License
 
